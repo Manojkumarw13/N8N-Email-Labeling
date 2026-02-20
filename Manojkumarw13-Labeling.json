@@ -1,0 +1,223 @@
+{
+  "name": "Manojkumarw13-Labeling",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 10,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "id": "95427727-0da6-4eb4-824d-d936a0ed7e5c",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zeigTHUyap3IpnSO",
+          "name": "Manojkumarw13"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "=Subject:{{ $json.Subject }}\nBody:{{ $json.snippet }}",
+        "categories": {
+          "categories": [
+            {
+              "category": "Sign-In",
+              "description": "Google account security or sign-in notification"
+            },
+            {
+              "category": "Intern-Fetch",
+              "description": "Internship or job alert notification"
+            },
+            {
+              "category": "COURSERA",
+              "description": "Coursera financial aid / course completion / certificate notification"
+            },
+            {
+              "category": "Internship",
+              "description": "Internship or job application update"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "typeVersion": 1.1,
+      "position": [208, 0],
+      "id": "869ece2f-b98c-446e-8443-b0944b1408fa",
+      "name": "Text Classifier"
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": ["Label_7942693516801604697"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [640, -272],
+      "id": "96210164-6b26-4516-b580-0e186df0c846",
+      "name": "Sign-In",
+      "webhookId": "70374114-c0cc-4c8e-9767-936be9056837",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zeigTHUyap3IpnSO",
+          "name": "Manojkumarw13"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": ["Label_8087038958079768723"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [640, -128],
+      "id": "4f3d2ac0-9f59-460b-8833-34a21940dde0",
+      "name": "Intern-Fetch",
+      "webhookId": "70374114-c0cc-4c8e-9767-936be9056837",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zeigTHUyap3IpnSO",
+          "name": "Manojkumarw13"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": ["Label_8864332279199147751"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [640, 32],
+      "id": "46fc8d9c-6d07-42a1-b282-ba0f0133c475",
+      "name": "Coursera",
+      "webhookId": "70374114-c0cc-4c8e-9767-936be9056837",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zeigTHUyap3IpnSO",
+          "name": "Manojkumarw13"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $json.id }}",
+        "labelIds": ["Label_8638962173168912382"]
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [640, 192],
+      "id": "5d00487e-aba1-4012-91c4-81c69e52dd14",
+      "name": "Intern-Result",
+      "webhookId": "70374114-c0cc-4c8e-9767-936be9056837",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zeigTHUyap3IpnSO",
+          "name": "Manojkumarw13"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": "llama3-70b-8192",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [144, 208],
+      "id": "99f939b8-c2f9-4e1e-bb2a-f434ad60eb1b",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "mRrCh5Clg7Yfqdv8",
+          "name": "Manojkumarw13-Groq"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Text Classifier": {
+      "main": [
+        [
+          {
+            "node": "Sign-In",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Intern-Fetch",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Coursera",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Intern-Result",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Text Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "5558a9fb-4802-49eb-8d54-3930df4781bd",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "ce5c1c39b1b47743e04808814c34ce8acec768b9e99ed6bbaf2bbf18f9bcd12e"
+  },
+  "id": "pkBbAwPd9EjlTwU7",
+  "tags": []
+}

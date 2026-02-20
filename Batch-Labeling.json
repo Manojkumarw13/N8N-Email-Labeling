@@ -1,0 +1,182 @@
+{
+  "name": "Batch-Email-Labeling",
+  "nodes": [
+    {
+      "parameters": {},
+      "id": "trigger-node",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [0, 0]
+    },
+    {
+      "parameters": {
+        "resource": "label",
+        "operation": "getAll",
+        "limit": 100
+      },
+      "id": "get-labels-node",
+      "name": "Get All Labels",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [200, 0],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zeigTHUyap3IpnSO",
+          "name": "Manojkumarw13"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const labels = items.map(item => `${item.json.name} (ID: ${item.json.id})`).join('\\n');\nreturn [{ json: { labels_context: labels } }];"
+      },
+      "id": "format-labels-node",
+      "name": "Format Labels",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [400, 0]
+    },
+    {
+      "parameters": {
+        "resource": "message",
+        "operation": "getAll",
+        "limit": 10,
+        "q": "label:INBOX",
+        "additionalFields": {
+          "includeSpamTrash": false
+        }
+      },
+      "id": "get-emails-node",
+      "name": "Get Emails",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [600, 0],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zeigTHUyap3IpnSO",
+          "name": "Manojkumarw13"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "prompt": "=You are an email classifier. \\n\\nHere are the available labels:\\n{{ $('Format Labels').first().json.labels_context }}\\n\\nClassify the following email into exactly one of these labels. Return ONLY the Label ID. Do not return keys, JSON, or the label name. Just the ID.\\n\\nSubject: {{ $json.subject }}\\nBody: {{ $json.snippet }}",
+        "options": {}
+      },
+      "id": "llm-chain-node",
+      "name": "Classify Email",
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1,
+      "position": [800, 0],
+      "credentials": {}
+    },
+    {
+      "parameters": {
+        "model": "llama3-70b-8192",
+        "options": {}
+      },
+      "id": "groq-model-node",
+      "name": "Groq Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [800, 200],
+      "credentials": {
+        "groqApi": {
+          "id": "mRrCh5Clg7Yfqdv8",
+          "name": "Manojkumarw13-Groq"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Get Emails').item.json.id }}",
+        "labelIds": [
+            "={{ $json.text.trim() }}"
+        ]
+      },
+      "id": "add-label-node",
+      "name": "Apply Label",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1000, 0],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "zeigTHUyap3IpnSO",
+          "name": "Manojkumarw13"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Get All Labels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Labels": {
+      "main": [
+        [
+          {
+            "node": "Format Labels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Labels": {
+      "main": [
+        [
+          {
+            "node": "Get Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Emails": {
+      "main": [
+        [
+          {
+            "node": "Classify Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Classify Email",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify Email": {
+      "main": [
+        [
+          {
+            "node": "Apply Label",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
