@@ -7,7 +7,10 @@
       "name": "Manual Trigger",
       "type": "n8n-nodes-base.manualTrigger",
       "typeVersion": 1,
-      "position": [0, 0]
+      "position": [
+        0,
+        0
+      ]
     },
     {
       "parameters": {
@@ -19,7 +22,10 @@
       "name": "Get All Labels",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [200, 0],
+      "position": [
+        200,
+        0
+      ],
       "credentials": {
         "gmailOAuth2": {
           "id": "zeigTHUyap3IpnSO",
@@ -36,7 +42,10 @@
       "name": "Format Labels",
       "type": "n8n-nodes-base.code",
       "typeVersion": 2,
-      "position": [400, 0]
+      "position": [
+        400,
+        0
+      ]
     },
     {
       "parameters": {
@@ -52,7 +61,10 @@
       "name": "Get Emails",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [600, 0],
+      "position": [
+        600,
+        0
+      ],
       "credentials": {
         "gmailOAuth2": {
           "id": "zeigTHUyap3IpnSO",
@@ -70,39 +82,43 @@
       "name": "Classify Email",
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1,
-      "position": [800, 0],
+      "position": [
+        800,
+        0
+      ],
       "credentials": {}
     },
     {
       "parameters": {
-        "model": "llama3-70b-8192",
+        "model": "meta-llama/llama-3-70b-instruct",
         "options": {}
       },
-      "id": "groq-model-node",
-      "name": "Groq Chat Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "id": "openrouter-model-node",
+      "name": "OpenRouter Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
       "typeVersion": 1,
-      "position": [800, 200],
-      "credentials": {
-        "groqApi": {
-          "id": "mRrCh5Clg7Yfqdv8",
-          "name": "Manojkumarw13-Groq"
-        }
-      }
+      "position": [
+        800,
+        200
+      ],
+      "credentials": {}
     },
     {
       "parameters": {
         "operation": "addLabels",
         "messageId": "={{ $('Get Emails').item.json.id }}",
         "labelIds": [
-            "={{ $json.text.trim() }}"
+          "={{ $json.text.trim() }}"
         ]
       },
       "id": "add-label-node",
       "name": "Apply Label",
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
-      "position": [1000, 0],
+      "position": [
+        1000,
+        0
+      ],
       "credentials": {
         "gmailOAuth2": {
           "id": "zeigTHUyap3IpnSO",
@@ -156,7 +172,7 @@
         ]
       ]
     },
-    "Groq Chat Model": {
+    "OpenRouter Chat Model": {
       "ai_languageModel": [
         [
           {
@@ -178,5 +194,7 @@
         ]
       ]
     }
-  }
+  },
+  "settings": {},
+  "id": "1lXreyi1QaWykI9u"
 }
