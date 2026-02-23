@@ -3,6 +3,7 @@
   "nodes": [
     {
       "parameters": {
+        
         "pollTimes": {
           "item": [
             {
@@ -21,8 +22,8 @@
       "name": "Gmail Trigger",
       "credentials": {
         "gmailOAuth2": {
-          "id": "zeigTHUyap3IpnSO",
-          "name": "Manojkumarw13"
+          "id": "",
+          "name": ""
         }
       }
     },
@@ -71,8 +72,8 @@
       "webhookId": "70374114-c0cc-4c8e-9767-936be9056837",
       "credentials": {
         "gmailOAuth2": {
-          "id": "zeigTHUyap3IpnSO",
-          "name": "Manojkumarw13"
+          "id": "",
+          "name": ""
         }
       }
     },
@@ -90,8 +91,8 @@
       "webhookId": "70374114-c0cc-4c8e-9767-936be9056837",
       "credentials": {
         "gmailOAuth2": {
-          "id": "zeigTHUyap3IpnSO",
-          "name": "Manojkumarw13"
+          "id": "",
+          "name": ""
         }
       }
     },
@@ -109,8 +110,8 @@
       "webhookId": "70374114-c0cc-4c8e-9767-936be9056837",
       "credentials": {
         "gmailOAuth2": {
-          "id": "zeigTHUyap3IpnSO",
-          "name": "Manojkumarw13"
+          "id": "",
+          "name": ""
         }
       }
     },
@@ -145,8 +146,8 @@
       "name": "Groq Chat Model",
       "credentials": {
         "groqApi": {
-          "id": "mRrCh5Clg7Yfqdv8",
-          "name": "Manojkumarw13-Groq"
+          "id": "",
+          "name": ""
         }
       }
     }
