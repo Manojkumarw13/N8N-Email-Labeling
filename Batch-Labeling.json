@@ -83,7 +83,7 @@
       "type": "@n8n/n8n-nodes-langchain.chainLlm",
       "typeVersion": 1,
       "position": [
-        800,
+        1000,
         0
       ],
       "credentials": {}
@@ -98,7 +98,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
       "typeVersion": 1,
       "position": [
-        800,
+        1000,
         200
       ],
       "credentials": {}
@@ -106,9 +106,9 @@
     {
       "parameters": {
         "operation": "addLabels",
-        "messageId": "={{ $('Get Emails').item.json.id }}",
+        "messageId": "={{ $('Loop').item.json.id }}",
         "labelIds": [
-          "={{ $json.text.trim() }}"
+          "={{ $json.text.replace(/[^A-Za-z0-9_-]/g, '') }}"
         ]
       },
       "id": "add-label-node",
@@ -116,7 +116,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [
-        1000,
+        1200,
         0
       ],
       "credentials": {
@@ -125,6 +125,20 @@
           "name": ""
         }
       }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "loop-node",
+      "name": "Loop",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        800,
+        0
+      ]
     }
   ],
   "connections": {
@@ -165,7 +179,7 @@
       "main": [
         [
           {
-            "node": "Classify Email",
+            "node": "Loop",
             "type": "main",
             "index": 0
           }
@@ -188,6 +202,29 @@
         [
           {
             "node": "Apply Label",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop": {
+      "main": [
+        [
+          {
+            "node": "Classify Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Apply Label": {
+      "main": [
+        [
+          {
+            "node": "Loop",
             "type": "main",
             "index": 0
           }
