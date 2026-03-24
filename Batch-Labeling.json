@@ -106,9 +106,9 @@
     {
       "parameters": {
         "operation": "addLabels",
-        "messageId": "={{ $('Loop').item.json.id }}",
+        "messageId": "={{ $('Loop').first().json.id }}",
         "labelIds": [
-          "={{ $json.text.replace(/[^A-Za-z0-9_-]/g, '') }}"
+          "={{ $json.text.trim().replace(/['\"]/g, '') }}"
         ]
       },
       "id": "add-label-node",
