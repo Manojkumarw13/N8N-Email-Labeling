@@ -64,6 +64,10 @@ graph TD
 3. Update specific Label IDs in the "Add Labels" and "Text Classifier" nodes to match your personal Gmail label IDs.
 4. Activate the polling trigger on the Real-time workflow to let it run autonomously!
 
+## 🔒 Security Note
+
+**Important:** Please ensure that all personal credentials, API keys, and specific Label IDs are removed from the workflow JSON files before sharing them publicly or committing them to a repository.
+
 ## 🛡️ License
 
 This project is tailored for personal inbox automation. Feel free to use and modify the workflow JSONs for your tailored categorization needs.
