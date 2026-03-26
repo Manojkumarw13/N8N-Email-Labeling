@@ -32,9 +32,10 @@ graph TD
 
     %% Batch workflow connections
     G -->|Fetch Inbox Emails & Labels| W2
-    W2 -->|Format Categorization Prompt| OR
-    OR -->|Target Label ID| W2
+    W2 -->|Initiate Loop for Each Email| OR
+    OR -->|Classify & Target Label ID| W2
     W2 -->|Apply Expected Label| G
+    G -.->|Loop back| W2
 ```
 
 ## ⚙️ Workflows
