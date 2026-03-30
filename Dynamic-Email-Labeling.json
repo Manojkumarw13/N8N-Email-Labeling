@@ -1,0 +1,201 @@
+{
+  "name": "Dynamic-Email-Labeling",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 10,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.2,
+      "position": [0, 0],
+      "id": "gmail-trigger-node",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "",
+          "name": ""
+        }
+      }
+    },
+    {
+      "parameters": {
+        "batchSize": 1,
+        "options": {}
+      },
+      "id": "loop-node",
+      "name": "Loop",
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [200, 0]
+    },
+    {
+      "parameters": {
+        "resource": "label",
+        "operation": "getAll",
+        "limit": 100
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [400, 0],
+      "id": "get-labels-node",
+      "name": "Get All Labels",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "",
+          "name": ""
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForAllItems",
+        "jsCode": "const labels = items.map(item => `${item.json.name} (ID: ${item.json.id})`).join('\\n');\nreturn [{ json: { labels_context: labels } }];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [600, 0],
+      "id": "format-labels-node",
+      "name": "Format Labels"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "prompt": "=You are an email classifier. \\n\\nHere are the available labels:\\n{{ $json.labels_context }}\\n\\nClassify the following email into exactly one of these labels. Return ONLY the Label ID. Do not return keys, JSON, or the label name. Just the ID.\\n\\nSubject: {{ $('Loop').first().json.subject || $('Loop').first().json.snippet.substring(0, 50) }}\\nBody: {{ $('Loop').first().json.snippet }}",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.chainLlm",
+      "typeVersion": 1,
+      "position": [800, 0],
+      "id": "classify-email-node",
+      "name": "Classify Email"
+    },
+    {
+      "parameters": {
+        "model": "meta-llama/llama-3-8b-instruct",
+        "options": {}
+      },
+      "id": "openrouter-model-node",
+      "name": "OpenRouter Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [800, 200],
+      "credentials": {
+        "openRouterApi": {
+          "id": "",
+          "name": ""
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "addLabels",
+        "messageId": "={{ $('Loop').first().json.id }}",
+        "labelIds": [
+          "={{ $json.text.trim().replace(/['\"]/g, '') }}"
+        ]
+      },
+      "id": "apply-label-node",
+      "name": "Apply Label",
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [1000, 0],
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "",
+          "name": ""
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Loop": {
+      "main": [
+        [
+          {
+            "node": "Get All Labels",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Get All Labels": {
+      "main": [
+        [
+          {
+            "node": "Format Labels",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Labels": {
+      "main": [
+        [
+          {
+            "node": "Classify Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Classify Email",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify Email": {
+      "main": [
+        [
+          {
+            "node": "Apply Label",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Apply Label": {
+      "main": [
+        [
+          {
+            "node": "Loop",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {},
+  "id": "dynamic-email-json"
+}
