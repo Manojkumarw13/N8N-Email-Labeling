@@ -22,6 +22,7 @@ graph TD
     subgraph n8n_workflows [n8n Environment]
         W1[Real-time Labeling <br> <i>Manojkumarw13-Labeling.json</i>]
         W2[Batch Labeling <br> <i>Batch-Labeling.json</i>]
+        W3[Dynamic Labeling <br> <i>Dynamic-Email-Labeling.json</i>]
     end
 
     %% Real-time workflow connections
@@ -36,6 +37,12 @@ graph TD
     OR -->|Classify & Target Label ID| W2
     W2 -->|Apply Expected Label| G
     G -.->|Loop back| W2
+
+    %% Dynamic workflow connections
+    G -->|Poll Emails & Get Labels| W3
+    W3 -->|Classify Details| OR
+    OR -->|Return Dynamic Label ID| W3
+    W3 -->|Apply Label| G
 ```
 
 ## ⚙️ Workflows
@@ -53,11 +60,18 @@ graph TD
 - **AI Processing:** Structures the context of valid labels into a prompt, passing it to `meta-llama/llama-3-70b-instruct` via the **OpenRouter API**.
 - **Action:** Analyzes the email subject and body to output an exact matching Label ID, efficiently grouping unstructured batch inboxes.
 
+### 3. Dynamic Email Labeling Workflow (`Dynamic-Email-Labeling.json`)
+
+- **Trigger:** Gmail Trigger polls every 10 minutes for new emails.
+- **Dynamic Extraction:** Dynamically queries the Gmail API for all available labels to construct the classification context on the fly.
+- **AI Processing:** Leverages `meta-llama/llama-3-8b-instruct` through the **OpenRouter API** to classify the email based strictly on the freshly fetched labels.
+- **Action:** Applies the dynamically determined Label ID to the incoming email.
+
 ## 🚀 Setup & Installation
 
 1. Import the provided `.json` files into your n8n workspace:
    - Go to your n8n workflows dashboard.
-   - Click on **Import from File...** and select `Manojkumarw13-Labeling.json` and `Batch-Labeling.json`.
+   - Click on **Import from File...** and select `Manojkumarw13-Labeling.json`, `Batch-Labeling.json`, and `Dynamic-Email-Labeling.json`.
 2. Configure Credentials:
    - **Gmail OAuth2:** Connect your Google account with correct read/write permissions for Gmail labels and messages.
    - **Groq API:** Supply your valid Groq API key for the real-time classification.
