@@ -11,36 +11,33 @@ This project contains **n8n workflows** that automatically categorize and label 
 
 ## 🏗️ Architecture
 
+### 1. Real-time Labeling Workflow
+
 ```mermaid
 graph TD
-    subgraph external_services [External Services]
-        G[Gmail API]
-        Groq[Groq API <br> Llama 3 70B]
-        OR[OpenRouter API <br> Llama 3 70B Instruct]
-    end
-
-    subgraph n8n_workflows [n8n Environment]
-        W1[Real-time Labeling <br> <i>Manojkumarw13-Labeling.json</i>]
-        W2[Batch Labeling <br> <i>Batch-Labeling.json</i>]
-        W3[Dynamic Labeling <br> <i>Dynamic-Email-Labeling.json</i>]
-    end
-
-    %% Real-time workflow connections
-    G -->|New Email Trigger| W1
-    W1 -->|Classify Text| Groq
+    G[Gmail API] -->|New Email Trigger| W1[Real-time Labeling <br> <i>Manojkumarw13-Labeling.json</i>]
+    W1 -->|Classify Text| Groq[Groq API <br> Llama 3 70B]
     Groq -->|Category Result| W1
     W1 -->|Apply Specific Label| G
+```
 
-    %% Batch workflow connections
-    G -->|Fetch Inbox Emails & Labels| W2
-    W2 -->|Initiate Loop for Each Email| OR
+### 2. Batch Labeling Workflow
+
+```mermaid
+graph TD
+    G[Gmail API] -->|Fetch Inbox Emails & Labels| W2[Batch Labeling <br> <i>Batch-Labeling.json</i>]
+    W2 -->|Initiate Loop for Each Email| OR[OpenRouter API <br> Llama 3 70B Instruct]
     OR -->|Classify & Target Label ID| W2
     W2 -->|Apply Expected Label| G
     G -.->|Loop back| W2
+```
 
-    %% Dynamic workflow connections
-    G -->|Poll Emails & Get Labels| W3
-    W3 -->|Classify Details| OR
+### 3. Dynamic Email Labeling Workflow
+
+```mermaid
+graph TD
+    G[Gmail API] -->|Poll Emails & Get Labels| W3[Dynamic Labeling <br> <i>Dynamic-Email-Labeling.json</i>]
+    W3 -->|Classify Details| OR[OpenRouter API <br> Llama 3 8B Instruct]
     OR -->|Return Dynamic Label ID| W3
     W3 -->|Apply Label| G
 ```
