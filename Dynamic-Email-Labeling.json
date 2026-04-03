@@ -19,12 +19,7 @@
       "position": [0, 0],
       "id": "gmail-trigger-node",
       "name": "Gmail Trigger",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "",
-          "name": ""
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -48,12 +43,7 @@
       "position": [400, 0],
       "id": "get-labels-node",
       "name": "Get All Labels",
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "",
-          "name": ""
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -88,12 +78,7 @@
       "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
       "typeVersion": 1,
       "position": [800, 200],
-      "credentials": {
-        "openRouterApi": {
-          "id": "",
-          "name": ""
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -108,12 +93,7 @@
       "type": "n8n-nodes-base.gmail",
       "typeVersion": 2.1,
       "position": [1000, 0],
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "",
-          "name": ""
-        }
-      }
+      "credentials": {}
     }
   ],
   "connections": {

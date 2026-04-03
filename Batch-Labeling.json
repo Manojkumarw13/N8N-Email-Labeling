@@ -26,12 +26,7 @@
         200,
         0
       ],
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "",
-          "name": ""
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -65,12 +60,7 @@
         600,
         0
       ],
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "",
-          "name": ""
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
@@ -119,12 +109,7 @@
         1200,
         0
       ],
-      "credentials": {
-        "gmailOAuth2": {
-          "id": "",
-          "name": ""
-        }
-      }
+      "credentials": {}
     },
     {
       "parameters": {
